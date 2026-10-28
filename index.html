@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook de Yai</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --azul: #1877f2;
+  --fondo: #f0f2f5;
+  --tarjeta: #ffffff;
+  --texto: #050505;
+  --secundario: #65676b;
+  --borde: #e4e6eb;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+body.oscuro {
+  --fondo: #18191a;
+  --tarjeta: #242526;
+  --texto: #e4e6eb;
+  --secundario: #b0b3b8;
+  --borde: #3e4042;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.barra {
+  height: 58px;
+  background: var(--tarjeta);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 1px 3px #0002;
+}
+
+.izquierda-barra, .derecha-barra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  color: var(--azul);
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.buscador {
+  width: 220px;
+  border: 0;
+  outline: none;
+  border-radius: 25px;
+  background: var(--fondo);
+  color: var(--texto);
+  padding: 12px 16px;
+}
+
+.icono {
+  background: var(--fondo);
+  color: var(--texto);
+  border: 0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 19px;
+}
+
+.perfil-mini {
+  background: #8a5cf6;
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.contenedor {
+  display: grid;
+  grid-template-columns: 270px minmax(400px, 680px) 270px;
+  gap: 24px;
+  justify-content: space-between;
+  max-width: 1500px;
+  margin: 18px auto;
+  padding: 0 18px;
+}
+
+.lateral {
+  position: sticky;
+  top: 75px;
+  height: calc(100vh - 85px);
+  overflow-y: auto;
+}
+
+.elemento-menu {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.elemento-menu:hover {
+  background: var(--borde);
+}
+
+.elemento-menu span {
+  font-size: 22px;
+}
+
+.tarjeta {
+  background: var(--tarjeta);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px #0001;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.padding {
+  padding: 16px;
+}
+
+.nombre {
+  font-weight: 650;
+}
+
+.secundario {
+  color: var(--secundario);
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1877f2, #42b883);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.separador {
+  border: 0;
+  border-top: 1px solid var(--borde);
+  margin: 12px 0;
+}
+
+/* HISTORIAS */
+
+.historias {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 14px;
+  scrollbar-width: thin;
+}
+
+.historia {
+  min-width: 112px;
+  width: 112px;
+  height: 190px;
+  border: 0;
+  padding: 0;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #ff8c42, #d63384);
+  color: white;
+  text-align: left;
+  transition: transform .2s;
+}
+
+.historia:hover {
+  transform: scale(1.03);
+}
+
+.historia video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.historia:nth-child(2) {
+  background: linear-gradient(150deg, #1877f2, #6b48db);
+}
+
+.historia:nth-child(3) {
+  background: linear-gradient(150deg, #14b8a6, #1877f2);
+}
+
+.historia:nth-child(4) {
+  background: linear-gradient(150deg, #f59e0b, #e84a5f);
+}
+
+.historia:nth-child(5) {
+  background: linear-gradient(150deg, #9b5de5, #f15bb5);
+}
+
+.historia:nth-child(6) {
+  background: linear-gradient(150deg, #00b894, #0984e3);
+}
+
+.historia .foto-historia {
+  font-size: 56px;
+  text-align: center;
+  padding-top: 40px;
+}
+
+.historia .nombre-historia {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 24px 8px 10px;
+  background: linear-gradient(transparent, #0009);
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.historia .avatar-historia {
+  position: absolute;
+  left: 9px;
+  top: 9px;
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--azul);
+  background: white;
+  color: var(--azul);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.historia-propia {
+  background: var(--tarjeta);
+  color: var(--texto);
+}
+
+.historia-propia .foto-historia {
+  padding-top: 0;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+}
+
+.historia-propia .nombre-historia {
+  background: var(--tarjeta);
+  text-align: center;
+  padding: 18px 4px 10px;
+}
+
+.mas {
+  position: absolute;
+  bottom: 38px;
+  left: 40px;
+  background: var(--azul);
+  color: white;
+  border: 4px solid var(--tarjeta);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CREAR PUBLICACIÓN */
+
+.crear-publicacion {
+  padding: 16px;
+}
+
+.crear-publicacion textarea {
+  flex: 1;
+  min-width: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 0;
+  border-radius: 24px;
+  padding: 13px 16px;
+  outline: none;
+  resize: vertical;
+}
+
+.boton-publicar {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--azul);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 11px;
+  font-weight: bold;
+}
+
+.boton-publicar:hover {
+  background: #166fe5;
+}
+
+.opciones-publicar {
+  display: flex;
+  justify-content: space-around;
+  color: var(--secundario);
+  font-size: 13px;
+  padding-top: 14px;
+}
+
+/* PUBLICACIONES */
+
+.cabecera-publicacion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 8px;
+}
+
+.menu-puntos {
+  margin-left: auto;
+  background: transparent;
+  color: var(--secundario);
+  border: 0;
+  font-size: 23px;
+}
+
+.texto-publicacion {
+  padding: 4px 16px 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.foto-publicacion {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  background: linear-gradient(135deg, #dbeafe, #e9d5ff, #fce7f3);
+}
+
+.foto-playa {
+  background: linear-gradient(#7dd3fc, #bae6fd 45%, #fde68a 46%, #f59e0b);
+}
+
+.foto-gatito {
+  background: linear-gradient(135deg, #fbcfe8, #c4b5fd);
+}
+
+.foto-flores {
+  background: linear-gradient(135deg, #bbf7d0, #fbcfe8);
+}
+
+.foto-estudio {
+  background: linear-gradient(135deg, #bfdbfe, #c7d2fe);
+}
+
+.foto-comida {
+  background: linear-gradient(135deg, #fed7aa, #fecaca);
+}
+
+.reacciones {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  color: var(--secundario);
+  font-size: 14px;
+}
+
+.botones-publicacion {
+  display: flex;
+  margin: 0 12px;
+  border-top: 1px solid var(--borde);
+  padding: 4px 0;
+}
+
+.boton-accion {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--secundario);
+  padding: 11px 3px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.boton-accion:hover {
+  background: var(--fondo);
+}
+
+.boton-accion.liked {
+  color: var(--azul);
+}
+
+/* COMENTARIOS */
+
+.zona-comentarios {
+  border-top: 1px solid var(--borde);
+  padding: 12px 16px;
+}
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.burbuja-comentario {
+  background: var(--fondo);
+  border-radius: 16px;
+  padding: 10px 13px;
+  overflow-wrap: anywhere;
+}
+
+.form-comentario {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.form-comentario input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  border-radius: 22px;
+  padding: 11px 14px;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+.form-comentario button {
+  border: 0;
+  border-radius: 20px;
+  background: var(--azul);
+  color: white;
+  padding: 8px 12px;
+}
+
+/* CONTACTOS */
+
+.titulo-contactos {
+  color: var(--secundario);
+  font-size: 17px;
+  margin: 12px 8px;
+}
+
+.contacto {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.contacto:hover {
+  background: var(--borde);
+}
+
+.avatar-contacto {
+  position: relative;
+}
+
+.en-linea {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #31a24c;
+  border: 2px solid var(--fondo);
+  border-radius: 50%;
+  right: -1px;
+  bottom: 0;
+  display: block;
+  z-index: 2;
+}
+
+/* VISOR DE HISTORIAS */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #000e;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.visor {
+  width: min(450px, 100%);
+  height: min(720px,90vh);
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.visor img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.visor video {
+  max-width: 100%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.visor-texto {
+  font-size: 26px;
+  font-weight: bold;
+  padding: 20px;
+  overflow-wrap: anywhere;
+}
+
+.cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: #0008;
+  color: white;
+  border: 0;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 25px;
+}
+
+.barra-historia {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 55px;
+  height: 4px;
+  background: #ffffff80;
+  border-radius: 4px;
+}
+
+@media (max-width: 1150px) {
+  .contenedor {
+    grid-template-columns: 220px minmax(350px, 680px);
+    justify-content: center;
+  }
+
+  .contactos {
+  display: none;
+}
+
+}
+
+@media (max-width: 760px) {
+  .barra {
+    padding: 0 10px;
+  }
+
+  .buscador {
+    width: 145px;
+  }
+
+  .contenedor {
+    display: block;
+    margin: 10px auto;
+    padding: 0 8px;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .historias {
+    padding: 10px;
+  }
+
+  .historia {
+    min-width: 100px;
+    width: 100px;
+    height: 165px;
+    position: relative;
+    overflow: hidden;
+    
+  }
+
+   .historia img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 12px;
+}
+
+
+    .historia video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+  .foto-publicacion {
+    height: 220px;
+  }
+
+  .boton-accion {
+    font-size: 12px;
+  }
+
+  .opciones-publicar {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .buscador {
+    width: 105px;
+  }
+
+  .derecha-barra {
+    gap: 5px;
+  }
+
+  .icono {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+.foto-contacto {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.foto-contacto .avatar-contacto {
+  width: 40px;
+  height: 40px;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.foto-contacto .en-linea {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #31a24c;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: block;
+  z-index: 5;
+}
+
+.avatar-bonitas {
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nombre-bonitas {
+  font-style: italic;
+  font-weight: bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- BARRA SUPERIOR -->
+
+<header class="barra">
+  <div class="izquierda-barra">
+    <div class="logo">f</div>
+    <input class="buscador" id="buscador"
+      type="search" placeholder="🔍 Buscar en Facebook">
+  </div>
+
+  <div class="derecha-barra">
+    <button class="icono" id="modoOscuro" title="Cambiar tema">🌙</button>
+    <img src="imagenes/yai.jpeg"
+     class="perfil-mini"
+     alt="Yai">
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <!-- MENU IZQUIERDO -->
+
+  <aside class="lateral menu">
+    <div class="elemento-menu">
+      <img src="imagenes/yai.jpeg" class="avatar" alt="foto de yai">
+      <span>Yai</span>
+    </div>
+    <div class="elemento-menu"><span>👥</span> Amigos</div>
+    <div class="elemento-menu"><span>🕒</span> Recuerdos</div>
+    <div class="elemento-menu"><span>🔖</span> Guardado</div>
+    <div class="elemento-menu"><span>👨‍👩‍👧</span> Grupos</div>
+    <div class="elemento-menu"><span>🎬</span> Video</div>
+    <div class="elemento-menu"><span>🛒</span> Marketplace</div>
+    <div class="elemento-menu"><span>📅</span> Eventos</div>
+    <div class="elemento-menu"><span>🎮</span> Juegos</div>
+    <hr class="separador">
+    <p class="secundario">Tus accesos directos</p>
+    <div class="elemento-menu"><span>💻</span> Mi proyecto</div>
+    <div class="elemento-menu"><span>📸</span> Fotos</div>
+  </aside>
+
+  <!-- FEED CENTRAL -->
+
+  <section class="feed">
+
+    <!-- HISTORIAS -->
+
+    <div class="tarjeta">
+      <div class="historias" id="listaHistorias">
+
+        <button class="historia historia-propia" id="crearHistoria">
+          <div class="foto-historia">🖼️</div>
+          <span class="mas">+</span>
+          <div class="nombre-historia">Crear historia</div>
+        </button>
+
+       <button class="historia"
+        data-nombre="Said"
+        data-imagen="imagenes/said.mp4"
+        data-tipo="video">
+
+  <video src="imagenes/said.mp4" muted></video>
+
+  <div class="avatar-historia">S</div>
+  <div class="nombre-historia">Said</div>
+</button>
+
+<button class="historia"
+        data-nombre="Mamá"
+        data-imagen="imagenes/mama.mp4"
+        data-tipo="video">
+
+  <video src="imagenes/mama.mp4" muted></video>
+
+  <div class="avatar-historia">M</div>
+  <div class="nombre-historia">Mamá</div>
+</button>
+
+        <button class="historia"
+        data-nombre="Yolotzin"
+        data-imagen="imagenes/yolo.mp4"
+        data-tipo="video">
+
+  <video src="imagenes/yolo.mp4" muted></video>
+
+  <div class="avatar-historia">Y</div>
+  <div class="nombre-historia">Yolotzin</div>
+</button>
+
+        <button class="historia"
+        data-nombre="Papá"
+        data-imagen="imagenes/papa.mp4"
+        data-tipo="video">
+
+  <video src="imagenes/papa.mp4" muted></video>
+
+  <div class="avatar-historia">P</div>
+  <div class="nombre-historia">Papá</div>
+
+</button>
+
+        <button class="historia"
+        data-nombre="Medel Hernández"
+        data-imagen="imagenes/medel.mp4"
+        data-tipo="video">
+
+  <video src="imagenes/medel.mp4" muted></video>
+
+  <div class="avatar-historia">M</div>
+  <div class="nombre-historia">Medel Hernández</div>
+</button>
+      </div>
+    </div>
+
+    <input type="file" id="archivoHistoria"
+      accept="image/*,video/*"hidden>
+
+    <!-- CREAR PUBLICACION -->
+
+    <div class="tarjeta crear-publicacion">
+      <div class="fila">
+        <img src="imagenes/yai.jpeg"
+     class="avatar"
+     alt="yai">
+        <textarea id="textoNuevo" rows="2"
+          placeholder="¿Qué estás pensando, Yai?"></textarea>
+      </div>
+
+      <div class="opciones-publicar">
+        <span>📹 Video en vivo</span>
+        <span>🖼️ Foto/video</span>
+        <span>😊 Sentimiento</span>
+      </div>
+
+      <button class="boton-publicar" id="publicar">
+        Publicar
+      </button>
+    </div>
+
+    <!-- LAS PUBLICACIONES SE MUESTRAN AQUI -->
+
+    <div id="publicaciones">
+
+<!-- PUBLICACION 1 -->
+<article class="tarjeta publicacion">
+  <div class="cabecera-publicacion">
+    <img src="imagenes/bonitas.jpeg" class="avatar avatar-bonitas" alt="Bonitas en Aprieto">
+
+    <div>
+      <div class="nombre nombre-bonitas">Bonitas en Aprieto</div>
+      <div class="secundario">Hace 2 h · 🌎</div>
+    </div>
+
+    <button class="menu-puntos">···</button>
+  </div>
+
+  <div class="texto-publicacion frase">
+    ¿Qué onda, amor? ¿Por qué no estás actuando como la forma idealizada que tengo de ti?
+  </div>
+
+  <div class="reacciones">
+    <span>👍 ❤️ 😂 <span class="contador">24</span></span>
+    <span><span class="cuenta-comentarios">2</span> comentarios</span>
+  </div>
+
+  <div class="botones-publicacion">
+    <button class="boton-accion like">👍 Me gusta</button>
+    <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+    <button class="boton-accion compartir">↗️ Compartir</button>
+  </div>
+
+  <div class="zona-comentarios" hidden>
+    <div class="lista-comentarios"></div>
+    <form class="form-comentario">
+      <input type="text" placeholder="Escribe un comentario...">
+      <button>Enviar</button>
+    </form>
+  </div>
+</article>
+
+<!-- PUBLICACION 2 -->
+<article class="tarjeta publicacion">
+  <div class="cabecera-publicacion">
+    <img src="imagenes/bonitas.jpeg" class="avatar avatar-bonitas" alt="Bonitas en Aprieto">
+
+    <div>
+      <div class="nombre nombre-bonitas">Bonitas en Aprieto</div>
+      <div class="secundario">Hace 2 h · 🌎</div>
+    </div>
+
+    <button class="menu-puntos">···</button>
+  </div>
+
+  <div class="texto-publicacion frase">
+    ¿Puede un hombre con novia salir a fiestas? Yo opino que sí, mientras no sea el mío. 🤷🏻‍♀️
+  </div>
+
+  <div class="reacciones">
+    <span>👍 ❤️ 😂 <span class="contador">56</span></span>
+    <span><span class="cuenta-comentarios">8</span> comentarios</span>
+  </div>
+
+  <div class="botones-publicacion">
+    <button class="boton-accion like">👍 Me gusta</button>
+    <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+    <button class="boton-accion compartir">↗️ Compartir</button>
+  </div>
+
+  <div class="zona-comentarios" hidden>
+    <div class="lista-comentarios"></div>
+    <form class="form-comentario">
+      <input type="text" placeholder="Escribe un comentario...">
+      <button>Enviar</button>
+    </form>
+  </div>
+</article>
+
+<!-- PUBLICACION 3 -->
+<article class="tarjeta publicacion">
+  <div class="cabecera-publicacion">
+    <img src="imagenes/bonitas.jpeg" class="avatar avatar-bonitas" alt="Bonitas en Aprieto">
+
+    <div>
+      <div class="nombre nombre-bonitas">Bonitas en Aprieto</div>
+      <div class="secundario">Hace 2 h · 🌎</div>
+    </div>
+
+    <button class="menu-puntos">···</button>
+  </div>
+
+  <div class="texto-publicacion frase">
+    De las amigas que tuve, aprendí a no tener ninguna. 🖤
+  </div>
+
+  <div class="reacciones">
+    <span>👍 ❤️ 😂 <span class="contador">39</span></span>
+    <span><span class="cuenta-comentarios">5</span> comentarios</span>
+  </div>
+
+  <div class="botones-publicacion">
+    <button class="boton-accion like">👍 Me gusta</button>
+    <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+    <button class="boton-accion compartir">↗️ Compartir</button>
+  </div>
+
+  <div class="zona-comentarios" hidden>
+    <div class="lista-comentarios"></div>
+    <form class="form-comentario">
+      <input type="text" placeholder="Escribe un comentario...">
+      <button>Enviar</button>
+    </form>
+  </div>
+</article>
+
+<!-- PUBLICACION 4 -->
+<article class="tarjeta publicacion">
+  <div class="cabecera-publicacion">
+    <img src="imagenes/bonitas.jpeg" class="avatar avatar-bonitas" alt="Bonitas en Aprieto">
+
+    <div>
+      <div class="nombre nombre-bonitas">Bonitas en Aprieto</div>
+      <div class="secundario">Hace 2 h · 🌎</div>
+    </div>
+
+    <button class="menu-puntos">···</button>
+  </div>
+
+  <div class="texto-publicacion frase">
+    Tengo que dejar de juntarme con weyes, se me está pegando eso de mentir. 😭
+  </div>
+
+  <div class="reacciones">
+    <span>👍 ❤️ 😂 <span class="contador">72</span></span>
+    <span><span class="cuenta-comentarios">11</span> comentarios</span>
+  </div>
+
+  <div class="botones-publicacion">
+    <button class="boton-accion like">👍 Me gusta</button>
+    <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+    <button class="boton-accion compartir">↗️ Compartir</button>
+  </div>
+
+  <div class="zona-comentarios" hidden>
+    <div class="lista-comentarios"></div>
+    <form class="form-comentario">
+      <input type="text" placeholder="Escribe un comentario...">
+      <button>Enviar</button>
+    </form>
+  </div>
+</article>
+
+<!-- PUBLICACION 5 -->
+<article class="tarjeta publicacion">
+ <div class="cabecera-publicacion">
+    <img src="imagenes/bonitas.jpeg" class="avatar avatar-bonitas" alt="Bonitas en Aprieto">
+
+    <div>
+      <div class="nombre nombre-bonitas">Bonitas en Aprieto</div>
+      <div class="secundario">Hace 2 h · 🌎</div>
+    </div>
+
+    <button class="menu-puntos">···</button>
+  </div>
+
+  <div class="texto-publicacion frase">
+    Eso me pasa por no haber sido qlra. 💋
+  </div>
+
+  <div class="reacciones">
+    <span>👍 ❤️ 😂 <span class="contador">91</span></span>
+    <span><span class="cuenta-comentarios">14</span> comentarios</span>
+  </div>
+
+  <div class="botones-publicacion">
+    <button class="boton-accion like">👍 Me gusta</button>
+    <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+    <button class="boton-accion compartir">↗️ Compartir</button>
+  </div>
+
+  <div class="zona-comentarios" hidden>
+    <div class="lista-comentarios"></div>
+    <form class="form-comentario">
+      <input type="text" placeholder="Escribe un comentario...">
+      <button>Enviar</button>
+    </form>
+  </div>
+</article>
+    </div>
+  </section>
+
+<!-- CONTACTOS DEL LADO DERECHO -->
+
+<aside class="lateral contactos">
+
+  <h3 class="titulo-contactos">Contactos</h3>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/mama.jpeg"
+           class="avatar avatar-contacto"
+           alt="Sthefani Hernández">
+      <span class="en-linea"></span>
+    </div>
+    Sthefani Hernández
+  </div>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/yolo.jpeg"
+           class="avatar avatar-contacto"
+           alt="Yolotzin Hernández">
+      <span class="en-linea"></span>
+    </div>
+    Yolotzin Hernández
+  </div>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/papa.jpeg"
+           class="avatar avatar-contacto"
+           alt="Temoch Silerio">
+      <span class="en-linea"></span>
+    </div>
+    Temoch Silerio
+  </div>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/lyn.jpeg"
+           class="avatar avatar-contacto"
+           alt="Lyn Hdz">
+      <span class="en-linea"></span>
+    </div>
+    Lyn Hdz
+  </div>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/abuelita.jpeg"
+           class="avatar avatar-contacto"
+           alt="Medel Hernández">
+      <span class="en-linea"></span>
+    </div>
+    Medel Hernández
+  </div>
+
+  <div class="contacto">
+    <div class="foto-contacto">
+      <img src="imagenes/saidhistoria.jpeg"
+           class="avatar avatar-contacto"
+           alt="Said Camargo">
+      <span class="en-linea"></span>
+    </div>
+    Said Camargo
+  </div>
+
+</aside>
+
+
+
+
+
+<!-- VENTANA PARA VER HISTORIAS -->
+
+<div class="modal" id="modalHistoria" hidden>
+  <div class="visor">
+    <div class="barra-historia"></div>
+    <button class="cerrar" id="cerrarHistoria">×</button>
+    <div id="contenidoHistoria" class="visor-texto"></div>
+    <div id="nombreVisor"></div>
+  </div>
+</div>
+
+<script>
+
+// MODO OSCURO
+
+const modoOscuro = document.getElementById("modoOscuro");
+
+modoOscuro.addEventListener("click", function() {
+  document.body.classList.toggle("oscuro");
+
+  if (document.body.classList.contains("oscuro")) {
+    modoOscuro.textContent = "☀️";
+  } else {
+    modoOscuro.textContent = "🌙";
+  }
+});
+
+
+// CREAR PUBLICACIONES NUEVAS
+
+const textoNuevo = document.getElementById("textoNuevo");
+const botonPublicar = document.getElementById("publicar");
+const publicaciones = document.getElementById("publicaciones");
+
+botonPublicar.addEventListener("click", function() {
+  const mensaje = textoNuevo.value.trim();
+
+  if (mensaje === "") {
+    alert("Yai, escribe algo antes de publicar 💙");
+    return;
+  }
+
+  const publicacion = document.createElement("article");
+  publicacion.className = "tarjeta publicacion";
+
+  publicacion.innerHTML = `
+    <div class="cabecera-publicacion">
+     <img src="imagenes/perfil-yai.jpg"
+     class="avatar"
+     alt="Mi foto de perfil">
+      <div>
+        <div class="nombre">Yai</div>
+        <div class="secundario">Ahora · 🌎</div>
+      </div>
+      <button class="menu-puntos">···</button>
+    </div>
+
+    <div class="texto-publicacion"></div>
+
+    <div class="reacciones">
+      <span>👍 ❤️ 😂 <span class="contador">0</span></span>
+      <span><span class="cuenta-comentarios">0</span> comentarios</span>
+    </div>
+
+    <div class="botones-publicacion">
+      <button class="boton-accion like">👍 Me gusta</button>
+      <button class="boton-accion mostrar-comentarios">💬 Comentar</button>
+      <button class="boton-accion compartir">↗ Compartir</button>
+    </div>
+
+    <div class="zona-comentarios" hidden>
+      <div class="lista-comentarios"></div>
+      <form class="form-comentario">
+        <input type="text" placeholder="Escribe un comentario...">
+        <button>Enviar</button>
+      </form>
+    </div>
+  `;
+
+  // El texto se coloca de forma segura en la publicación.
+  publicacion.querySelector(".texto-publicacion").textContent = mensaje;
+
+  publicaciones.prepend(publicacion);
+  textoNuevo.value = "";
+});
+
+
+// BOTONES DE ME GUSTA, COMENTARIOS Y COMPARTIR
+
+publicaciones.addEventListener("click", function(evento) {
+  const publicacion = evento.target.closest(".publicacion");
+
+  if (!publicacion) {
+    return;
+  }
+
+  // SUMAR O QUITAR ME GUSTA
+
+  if (evento.target.classList.contains("like")) {
+    const boton = evento.target;
+    const contador = publicacion.querySelector(".contador");
+    let likes = Number(contador.textContent);
+
+    if (boton.classList.contains("liked")) {
+      likes--;
+      boton.classList.remove("liked");
+      boton.textContent = "👍 Me gusta";
+    } else {
+      likes++;
+      boton.classList.add("liked");
+      boton.textContent = "💙 Te gusta";
+    }
+
+    contador.textContent = likes;
+  }
+
+  // MOSTRAR U OCULTAR COMENTARIOS
+
+  if (evento.target.classList.contains("mostrar-comentarios")) {
+    const zona = publicacion.querySelector(".zona-comentarios");
+    zona.hidden = !zona.hidden;
+  }
+
+  // COMPARTIR DE DEMOSTRACION
+
+  if (evento.target.classList.contains("compartir")) {
+    alert("¡Gracias por compartir! Esta es una demostración.");
+  }
+});
+
+
+// AGREGAR COMENTARIOS A CADA PUBLICACION
+
+publicaciones.addEventListener("submit", function(evento) {
+  if (!evento.target.classList.contains("form-comentario")) {
+    return;
+  }
+
+  evento.preventDefault();
+
+  const formulario = evento.target;
+  const publicacion = formulario.closest(".publicacion");
+  const entrada = formulario.querySelector("input");
+  const mensaje = entrada.value.trim();
+
+  if (mensaje === "") {
+    return;
+  }
+
+  const comentario = document.createElement("div");
+  comentario.className = "comentario";
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = "Y";
+
+  const burbuja = document.createElement("div");
+  burbuja.className = "burbuja-comentario";
+
+  const nombre = document.createElement("b");
+  nombre.textContent = "Yai";
+
+  const texto = document.createElement("div");
+  texto.textContent = mensaje;
+
+  burbuja.appendChild(nombre);
+  burbuja.appendChild(texto);
+  comentario.appendChild(avatar);
+  comentario.appendChild(burbuja);
+
+  publicacion.querySelector(".lista-comentarios").appendChild(comentario);
+
+  const cantidad = publicacion.querySelector(".cuenta-comentarios");
+  cantidad.textContent = Number(cantidad.textContent) + 1;
+
+  entrada.value = "";
+});
+
+
+// ABRIR Y CERRAR HISTORIAS
+
+
+const cerrarHistoria = document.getElementById("cerrarHistoria");
+
+cerrarHistoria.addEventListener("click", function() {
+  modalHistoria.hidden = true;
+  contenidoHistoria.replaceChildren();
+});
+const listaHistorias = document.getElementById("listaHistorias");
+const modalHistoria = document.getElementById("modalHistoria");
+const contenidoHistoria = document.getElementById("contenidoHistoria");
+const nombreVisor = document.getElementById("nombreVisor");
+
+listaHistorias.addEventListener("click", function(evento) {
+  const historia = evento.target.closest(".historia");
+
+  if (!historia || historia.id === "crearHistoria") {
+    return;
+  }
+
+  contenidoHistoria.replaceChildren();
+
+  const nombre = historia.dataset.nombre;
+  const texto = historia.dataset.texto;
+  const archivo = historia.dataset.imagen;
+  const tipo = historia.dataset.tipo;
+
+  if (archivo && tipo === "video") {
+    const video = document.createElement("video");
+    video.src = archivo;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    contenidoHistoria.appendChild(video);
+
+  } else if (archivo) {
+    const foto = document.createElement("img");
+    foto.src = archivo;
+    contenidoHistoria.appendChild(foto);
+
+  } else {
+    const imagenTexto = historia.querySelector(".foto-historia");
+
+    contenidoHistoria.textContent =
+      imagenTexto.textContent + "\n" + (texto || "");
+  }
+
+  
+  modalHistoria.hidden = false;
+});
+
+
+
+// SUBIR UNA HISTORIA DESDE LA COMPUTADORA
+
+const crearHistoria = document.getElementById("crearHistoria");
+const archivoHistoria = document.getElementById("archivoHistoria");
+
+
+crearHistoria.addEventListener("click", function() {
+  archivoHistoria.click();
+});
+
+archivoHistoria.addEventListener("change", function() {
+  const archivo = archivoHistoria.files[0];
+
+  if (!archivo) {
+    return;
+  }
+
+  if (!archivo.type.startsWith("image/")) {
+    alert("Selecciona un archivo de imagen.");
+    archivoHistoria.value = "";
+    return;
+  }
+
+  const lector = new FileReader();
+
+  lector.addEventListener("load", function() {
+    const nuevaHistoria = document.createElement("button");
+    nuevaHistoria.className = "historia";
+    nuevaHistoria.dataset.nombre = "Yai";
+    nuevaHistoria.dataset.imagen = lector.result;
+    nuevaHistoria.dataset.texto = "";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar-historia";
+    avatar.textContent = "Y";
+
+    const foto = document.createElement("img");
+    foto.src = lector.result;
+    foto.alt = "Mi historia";
+    foto.style.width = "100%";
+    foto.style.height = "100%";
+    foto.style.objectFit = "cover";
+
+    const nombre = document.createElement("div");
+    nombre.className = "nombre-historia";
+    nombre.textContent = "Yai";
+
+    nuevaHistoria.appendChild(avatar);
+    nuevaHistoria.appendChild(foto);
+    nuevaHistoria.appendChild(nombre);
+
+    listaHistorias.insertBefore(nuevaHistoria, crearHistoria.nextSibling);
+
+    alert("¡Tu historia se agregó! 💙");
+    archivoHistoria.value = "";
+  });
+
+  lector.readAsDataURL(archivo);
+});
+
+
+// BUSCAR PERSONAS Y PUBLICACIONES
+
+const buscador = document.getElementById("buscador");
+
+buscador.addEventListener("input", function() {
+  const busqueda = buscador.value.toLowerCase();
+
+  document.querySelectorAll(".publicacion").forEach(function(publicacion) {
+    const contenido = publicacion.textContent.toLowerCase();
+    publicacion.style.display = contenido.includes(busqueda) ? "" : "none";
+  });
+});
+
+</script>
+
+</body>
+</html>
